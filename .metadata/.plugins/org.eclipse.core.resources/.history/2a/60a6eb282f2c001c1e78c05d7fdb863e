@@ -1,0 +1,23 @@
+package model;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
+
+@Entity(name="cliente")
+public class Cliente {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	private String nome;
+	@OneToMany(fetch =FetchType.LAZY, cascade=CascadeType.ALL)
+	@JoinTable(name="cliente_enderecos",
+	joinColumns= @JoinColumn(name="Cliente_id"),inverseJoinColumns= @JoinColumn(name="cpf"))
+	private Endereco endereco;
+}

@@ -1,0 +1,88 @@
+package service;
+
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javassist.tools.rmi.ObjectNotFoundException;
+import model.Cliente;
+import model.ClienteRepository;
+import model.Endereco;
+import model.EnderecoRepository;
+
+@Service
+public class ClienteService {
+	
+	@Autowired
+	private ClienteRepository clienteRepository;
+	@Autowired 
+	EnderecoRepository enderecoRepository;
+	@Autowired
+	private ViaCep viaCep;
+
+	public Object buscarTodos() {
+		
+		return clienteRepository.findAll();
+	}
+
+	//Criaremos um método (vazio) que busca o cep pelo id do cliente, e se caso nao encontre cep 
+	//ou ele não exista, inserimos o viacep(onde o metodo ira consultar o cep digitado ) e irá persistir o cep 
+	//e junto com ele , o Endereço no cliente:
+	public void salvarClienteComCep(Cliente cliente) {
+		// Verificar se o Endereco do Cliente já existe (pelo CEP):
+		String cep = cliente.getEndereco().getCep();
+		Endereco endereco = enderecoRepository.findById(cep)//procura pelo cep que está em endereco
+				.orElseGet(() ->{
+					// Caso não exista, integrar com o ViaCEP e persistir o retorno.
+		Endereco novoEndereco = viaCep.consultarCep(cep); //instanciamos c viaCep e ele nos retorna um endereço
+					//a partir da consulta pelo Cep e inserimos no obj novoEndereco através da instanciaçao.
+		enderecoRepository.save(novoEndereco); // vamos persistir o endereço no Jpa .
+		return novoEndereco; // se nao achar o endereço atraves do cep ele persiste e retorna o novo endereco
+				});
+		cliente.setEndereco(endereco);
+		// Inserir Cliente, vinculando o Endereco (novo ou existente).
+		clienteRepository.save(cliente);
+		
+	}
+
+	public void criarCliente(Cliente cliente) {
+		//depois de criar o endereço e vincular ele no Cliente , iremos criar o cliente:
+		 salvarClienteComCep(cliente);;
+	}
+
+
+
+
+	public Object buscarPorId(Long id) throws ObjectNotFoundException {
+	Optional<Cliente> obj = clienteRepository.findById(id);
+		return obj.orElseThrow(() -> new ObjectNotFoundException("Não Foi encontrado nenhum cliente pelo id: " +id ));
+	}
+
+
+
+
+	public Object atualizarDados(Long id, Cliente cliente) {
+		
+		return null;
+	}
+
+
+
+
+	public void deletarDados(Long id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+
+
+
+
+
+
+	
+}

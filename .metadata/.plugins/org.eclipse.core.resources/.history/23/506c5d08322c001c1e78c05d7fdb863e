@@ -1,0 +1,55 @@
+package controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import javassist.tools.rmi.ObjectNotFoundException;
+import model.Cliente;
+import service.ClienteService;
+
+@RestController
+@RequestMapping("/cliente")
+public class ClienteController {
+	@Autowired
+	private ClienteService clienteService;
+	
+	@GetMapping
+	public ResponseEntity<Object> buscarTodos(){
+		return ResponseEntity.ok(clienteService.buscarTodos());
+		
+		
+	}
+	
+	@PostMapping
+	public ResponseEntity<Object>criarCliente(@RequestBody Cliente cliente){
+		Cliente obj = clienteService.criarCliente(cliente);
+		return ResponseEntity.ok(obj);
+		
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<Object>buscarPorId(@PathVariable Long id) throws ObjectNotFoundException{
+		return ResponseEntity.ok().body(clienteService.buscarPorId(id));
+		
+}
+	@PutMapping("/{id}")
+	public ResponseEntity<Object>atualizarDados(@PathVariable Long id, @RequestBody Cliente cliente){
+		return ResponseEntity.ok().body(clienteService.atualizarDados(id, cliente));
+		
+	}
+	
+	@DeleteMapping("/{id}")
+	public void deletarDados(@PathVariable Long id) {
+		clienteService.deletarDados(id);
+	}
+	
+}

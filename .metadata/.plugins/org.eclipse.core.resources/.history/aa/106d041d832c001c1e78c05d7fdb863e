@@ -1,0 +1,41 @@
+package com.projectdata.projetopadraospring;
+//Projeto Spring Boot gerado via Spring Initializr
+//Os seguintes módulos foram selecionados:
+//-Spring Data Jpa;
+//-Spring Web;
+//- H2 Database;
+// -OpenFeign
+//
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.Bean;
+
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.License;
+
+@EnableFeignClients
+@SpringBootApplication
+
+public class ProjetoPadraoSpringApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(ProjetoPadraoSpringApplication.class, args);
+		
+		public OpenAPI customOpenAPI (@Value("Clients API") String description){
+			   return new OpenAPI()
+			         .info(new Info()
+			         .title()
+			         .version("1.0")
+			         .termsOfService("http://suagger.io/terms")
+			         .license(new License().name("Apache 2.0")
+			         .url("http://springdoc.org")));
+			}
+	}
+}
+	
+
+	
+
